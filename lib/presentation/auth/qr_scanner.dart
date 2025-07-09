@@ -48,85 +48,84 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             }
           },
           builder: (context, state) {
-            return state is GetUserDataState && state.status == ProviderStatus.loading?Center(
-              child: CircularProgressIndicator(),
-            ):
-            Column(
-              children: [
-                Expanded(flex: 4, child: _buildQrView(context)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.all(8),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await controller?.toggleFlash();
-                          setState(() {});
-                        },
-                        child: FutureBuilder(
-                          future: controller?.getFlashStatus(),
-                          builder: (context, snapshot) {
-                            return Text('Flash: ${snapshot.data}');
-                          },
-                        ),
+            return state is GetUserDataState &&
+                    state.status == ProviderStatus.loading
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    children: [
+                      Expanded(flex: 4, child: _buildQrView(context)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await controller?.toggleFlash();
+                                setState(() {});
+                              },
+                              child: FutureBuilder(
+                                future: controller?.getFlashStatus(),
+                                builder: (context, snapshot) {
+                                  return Text('Flash: ${snapshot.data}');
+                                },
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await controller?.flipCamera();
+                                setState(() {});
+                              },
+                              child: FutureBuilder(
+                                future: controller?.getCameraInfo(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.data != null) {
+                                    return Text("error");
+                                  } else {
+                                    return const Text('loading');
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(8),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await controller?.flipCamera();
-                          setState(() {});
-                        },
-                        child: FutureBuilder(
-                          future: controller?.getCameraInfo(),
-                          builder: (context, snapshot) {
-                            if (snapshot.data != null) {
-                              
-                              return Text("error");
-                            } else {
-                              return const Text('loading');
-                            }
-                          },
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await controller?.pauseCamera();
+                              },
+                              child: const Text(
+                                'pause',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await controller?.resumeCamera();
+                              },
+                              child: const Text(
+                                'resume',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.all(8),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await controller?.pauseCamera();
-                        },
-                        child: const Text(
-                          'pause',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(8),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await controller?.resumeCamera();
-                        },
-                        child: const Text(
-                          'resume',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
+                    ],
+                  );
           },
         ),
       ),
@@ -162,9 +161,9 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     });
     controller.scannedDataStream.listen((scanData) {
       result = scanData;
-      
+
       context.read<UserBloc>().add(
-        GetUserDataEvent(userId: result!.format.toString()),
+        GetUserDataEvent(userId: result?.toString() ?? "VTgmVhbtf2kXJiI64qjw"),
       );
     });
   }
